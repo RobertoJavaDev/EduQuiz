@@ -68,6 +68,7 @@ class QuizServiceTest {
         // given
         Quiz quiz = new Quiz();
         quiz.setName("Security");
+        quiz.setQuestions(Collections.emptyList());
         QuizRequestDto quizRequestDto = quizRequestMapper.mapQuizEntityToQuizRequestDto(quiz);
         QuizDto createdQuiz = quizService.createQuiz(quizRequestDto);
 
@@ -94,12 +95,12 @@ class QuizServiceTest {
         // given
         Quiz quiz = new Quiz();
         quiz.setName("Security");
+        quiz.setQuestions(Collections.emptyList());
         QuizRequestDto quizRequestDto = new QuizRequestDto(
                 quiz.getName(),
                 quiz.getCategory(),
                 quiz.getUser(),
-                quiz.getQuestions(),
-                quiz.getGames());
+                quiz.getQuestions());
 
         // when
         QuizDto createdQuiz = quizService.createQuiz(quizRequestDto);
@@ -114,13 +115,13 @@ class QuizServiceTest {
         // given
         Quiz quiz = new Quiz();
         quiz.setName("Security");
+        quiz.setQuestions(Collections.emptyList());
         QuizRequestDto quizRequestDto = quizRequestMapper.mapQuizEntityToQuizRequestDto(quiz);
         QuizDto createdQuiz = quizService.createQuiz(quizRequestDto);
         QuizRequestDto quizToUpdate = new QuizRequestDto("Security-Pro",
                 quiz.getCategory(),
                 quiz.getUser(),
-                quiz.getQuestions(),
-                quiz.getGames());
+                quiz.getQuestions());
 
         // when
         QuizDto updatedQuiz = quizService.updateQuiz(createdQuiz.id(), quizToUpdate);
@@ -128,7 +129,7 @@ class QuizServiceTest {
         // then
         assertEquals(updatedQuiz.name(), "Security-Pro");
         assertNull(updatedQuiz.category());
-        assertNull(updatedQuiz.questions());
+        assertEquals(updatedQuiz.questions().size(), 0);
     }
 
     @Test
@@ -139,7 +140,6 @@ class QuizServiceTest {
                 "NonExistentQuiz",
                 new Category(),
                 new User(),
-                Collections.emptyList(),
                 Collections.emptyList()
         );
 
@@ -154,6 +154,7 @@ class QuizServiceTest {
         // given
         Quiz quiz = new Quiz();
         quiz.setName("Security");
+        quiz.setQuestions(Collections.emptyList());
         QuizRequestDto quizRequestDto = quizRequestMapper.mapQuizEntityToQuizRequestDto(quiz);
         QuizDto createdQuiz = quizService.createQuiz(quizRequestDto);
 

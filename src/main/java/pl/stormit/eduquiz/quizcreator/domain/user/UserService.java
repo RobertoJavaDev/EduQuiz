@@ -4,6 +4,8 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -62,6 +64,12 @@ public class UserService {
         return userMapper.mapUserEntityToUserDto(user);
     }
 
+    public User getUserFromContext(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findUserByNickname(authentication.getName()).orElse(null);
+        return user;
+    }
+
     @Transactional
     public UserDto createUser(@Valid @RequestBody UserRequestDto userRequest) {
         User user = new User();
@@ -70,7 +78,6 @@ public class UserService {
         user.setPassword(customPasswordEncoder.encode(userRequest.password()));
         user.setStatus(Status.UNVERIFIED);
         user.setRole(Role.ROLE_USER);
-        user.setQuizzes(userRequest.quizzes());
         return userMapper.mapUserEntityToUserDto(userRepository.save(user));
     }
 
@@ -85,7 +92,6 @@ public class UserService {
         user.setPassword(customPasswordEncoder.encode(userRequest.password()));
         user.setStatus(userRequest.status());
         user.setRole(userRequest.role());
-        user.setQuizzes(userRequest.quizzes());
         User savedUser = userRepository.save(user);
         return userMapper.mapUserEntityToUserDto(savedUser);
     }
